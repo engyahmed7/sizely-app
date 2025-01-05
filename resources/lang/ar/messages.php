@@ -1,0 +1,53 @@
+<?php
+
+return [
+    'create_trial' => 'إنشاء تجربة',
+    'body_measurement_form' => 'نموذج قياس الجسم',
+    'trial_name' => 'اسم التجربة',
+    'next_step' => 'الخطوة التالية',
+    'trial_saved' => 'تم حفظ التجربة بنجاح!',
+    'pose_detection' => [
+        'look_at_camera' => 'يرجى النظر مباشرة إلى الكاميرا.',
+        'init_error' => 'خطأ في تهيئة PoseNet أو الكاميرا.',
+        'trial_name_required' => 'اسم التجربة مطلوب.',
+        'error_saving' => 'خطأ في حفظ القياسات.',
+        'measurements_saved' => 'تم حفظ القياسات! عرض الكتف: :width سم',
+        'enter_trial_name' => 'الرجاء إدخال اسم التجربة.',
+        'gender' => 'Gender',
+        'select_gender' => 'Please select a gender.',
+    ],
+
+    'trial_details' => 'تفاصيل التجربة',
+    'measurements' => 'القياسات',
+    'right_eye' => 'العين اليمنى',
+    'left_eye' => 'العين اليسرى',
+    'right_shoulder' => 'الكتف الأيمن',
+    'left_shoulder' => 'الكتف الأيسر',
+    'back_to_form' => 'العودة إلى النموذج',
+
+    'trials_list' => 'قائمة التجارب',
+    'id' => 'المعرف',
+    'trial_name' => 'اسم التجربة',
+    'right_eye' => 'العين اليمنى',
+    'left_eye' => 'العين اليسرى',
+    'right_shoulder' => 'الكتف الأيمن',
+    'left_shoulder' => 'الكتف الأيسر',
+    'shoulder_width_cm' => 'عرض الكتف (سم)',
+    'no_trials_found' => 'لم يتم العثور على تجارب.',
+
+    'right_eye_x' => 'العين اليمنى X',
+    'right_eye_y' => 'العين اليمنى Y',
+    'right_eye_score' => 'نتيجة العين اليمنى',
+    'left_eye_x' => 'العين اليسرى X',
+    'left_eye_y' => 'العين اليسرى Y',
+    'left_eye_score' => 'نتيجة العين اليسرى',
+    'right_shoulder_x' => 'الكتف الأيمن X',
+    'right_shoulder_y' => 'الكتف الأيمن Y',
+    'right_shoulder_score' => 'نتيجة الكتف الأيمن',
+    'left_shoulder_x' => 'الكتف الأيسر X',
+    'left_shoulder_y' => 'الكتف الأيسر Y',
+    'left_shoulder_score' => 'نتيجة الكتف الأيسر',
+
+    'gender' => 'الجنس',
+    'select_gender' => 'الرجاء تحديد الجنس.',
+];
