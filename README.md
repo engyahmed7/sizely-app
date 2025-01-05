@@ -22,8 +22,8 @@ Follow these steps to install and set up Sizely App on your local machine:
 Start by cloning the repository from GitHub to your local machine:
 
 ```bash
-git clone https://gitlab.objects.ws/laravel/sizely-ai-detects-sizes-pos.git
-cd sizely-ai-detects-sizes-pos
+git clone https://github.com/engyahmed7/sizely-app.git
+cd sizely-app
 ```
 
 ### 2. Install Dependencies
@@ -91,4 +91,4 @@ This application integrates several key libraries and frameworks:
 - **[PoseNet](https://github.com/tensorflow/tfjs-models/tree/master/posenet)**, a lightweight and efficient model for pose detection.
 - **[body-measure](https://github.com/AI-Machine-Vision-Lab/body-measure)**, a repository that provides body measurement functionalities integrated into the app.
 
-These tools and frameworks enabled the development of Sizely App and contributed significantly to its capabilities in real-time pose detection and analysis.# sizely-app
+These tools and frameworks enabled the development of Sizely App and contributed significantly to its capabilities in real-time pose detection and analysis.
