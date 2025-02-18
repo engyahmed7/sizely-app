@@ -8,7 +8,7 @@ class Trial extends Model
 {
     protected $fillable = [
         'trial_name',
-        'gender',
+        // 'gender',
         'righteye',
         'lefteye',
         'rightshoulder',
@@ -24,8 +24,10 @@ class Trial extends Model
         'rightKnee',
         'leftKnee',
         'shoulder_cm',
+        'chest_cm',
         'image_data',
-        'measurements'
+        'measurements',
+        'face_image'
     ];
 
     protected $casts = [

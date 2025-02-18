@@ -3,6 +3,9 @@
     --secondary: #f5f7fa;
     --text: #2c3e50;
     --success: #2ecc71;
+    --shadow-light: rgba(0, 0, 0, 0.2);
+    --shadow-heavy: rgba(0, 0, 0, 0.4);
+    --highlight: #3b82f6;
 }
 
 * {
@@ -111,7 +114,7 @@ input[type="text"]:focus {
 .data-preview {
     position: relative;
     background: white;
-    padding: 1.5rem;
+    /* padding: 1.5rem; */
     border-radius: 10px;
     margin-bottom: 1.5rem;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
@@ -133,7 +136,7 @@ input[type="text"]:focus {
     }
 
     h1 {
-        font-size: 2rem;
+        font-size: 1.5rem;
     }
 
     .btn {
@@ -142,21 +145,21 @@ input[type="text"]:focus {
     }
 }
 
-#video {
+#video_face {
     width: 100%;
     height: auto;
+    border-radius: 50%;
+    object-fit: cover;
+    overflow: hidden;
     position: relative;
-    z-index: 1;
 }
 
-#output {
+#output_face {
+    width: 100%;
+    border-radius: 50%;
     position: absolute;
     top: 0;
     left: 0;
-    z-index: 2;
-    pointer-events: none;
-    width: 100%;
-    height: 100%;
 }
 
 .alert {
@@ -303,5 +306,285 @@ input[type="text"]:focus {
     .gender-option {
         width: 100%;
         max-width: 200px;
+    }
+}
+.dropdown {
+    width: 100%;
+    padding: 0.875rem 1rem;
+    margin: 0.5rem 0 1.5rem;
+    font-size: 0.95rem;
+    color: #2c3e50;
+    background-color: #ffffff;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 1rem;
+    padding-right: 2.5rem;
+}
+
+.dropdown:hover {
+    border-color: #cbd5e1;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    transform: translateY(-1px);
+}
+
+.dropdown:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+    transform: translateY(-1px);
+}
+
+.dropdown option {
+    padding: 1rem;
+    font-size: 0.95rem;
+    color: #2c3e50;
+    background-color: #ffffff;
+}
+
+.dropdown option:hover {
+    background-color: #f8fafc;
+}
+
+.dropdown option:checked {
+    background-color: #3b82f6;
+    color: #ffffff;
+}
+
+.dropdown option:disabled {
+    color: #94a3b8;
+    background-color: #f8fafc;
+}
+
+.dropdown option[value=""][disabled] {
+    color: #94a3b8;
+}
+
+@keyframes select-focus {
+    0% {
+        box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.2);
+    }
+    50% {
+        box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2);
+    }
+    100% {
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+    }
+}
+
+.dropdown:focus {
+    animation: select-focus 0.3s ease-out;
+}
+
+@media (max-width: 768px) {
+    .dropdown {
+        padding: 0.75rem 2rem 0.75rem 0.75rem;
+        font-size: 1rem;
+        background-position: right 0.75rem center;
+    }
+}
+
+.camera-container {
+    position: relative;
+    width: 100%;
+    max-width: 700px;
+    margin: 20px auto;
+    border-radius: 20px;
+    overflow: hidden;
+    border: 2px solid var(--primary);
+}
+
+.camera-frame {
+    position: relative;
+    width: 100%;
+    height: 480px;
+    overflow: hidden;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.6);
+}
+
+@media (max-width: 768px) {
+    .camera-frame {
+        height: 261px;
+    }
+
+    .camera-container .button-container button {
+        margin-bottom: 10px;
+        font-size: 12px;
+    }
+
+    #output_face {
+        top: 10%;
+        height: 200px;
+    }
+}
+
+#video_face {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform: scaleX(-1);
+    transition: opacity 0.3s ease;
+    border-radius: 8px;
+}
+
+
+.face-guide {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 240px;
+    height: 240px;
+    pointer-events: none;
+    z-index: 3;
+}
+
+.face-guide::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 50%;
+    border: 3px solid rgba(255, 255, 255, 0.9);
+    animation: pulseGuide 2s infinite ease-in-out;
+}
+
+.face-guide::after {
+    content: "";
+    position: absolute;
+    top: -12px;
+    left: -12px;
+    right: -12px;
+    bottom: -12px;
+    border-radius: 50%;
+    border: 2px solid rgba(59, 130, 246, 0.2);
+    animation: pulseGuideOuter 2s infinite ease-in-out;
+}
+
+.countdown {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 80px;
+    font-weight: 700;
+    color: white;
+    text-shadow: 0 0 30px rgba(0, 0, 0, 0.6);
+    z-index: 1000;
+    animation: countdownPulse 1s infinite;
+}
+
+.button-container {
+    padding: 20px;
+    text-align: center;
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    margin-top: 50px;
+}
+
+.btn {
+    padding: 14px 28px;
+    margin: 0 12px;
+    font-size: 18px;
+    font-weight: 600;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.4s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.btn-primary {
+    background: linear-gradient(145deg, #3b82f6, #2563eb);
+    color: white;
+    box-shadow: 0 6px 18px rgba(59, 130, 246, 0.3);
+}
+
+.btn-secondary {
+    background: linear-gradient(145deg, #4b5563, #374151);
+    color: white;
+    box-shadow: 0 6px 18px rgba(75, 85, 99, 0.3);
+}
+
+.btn:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px var(--shadow-light);
+}
+
+.btn:active {
+    transform: translateY(0);
+}
+
+@keyframes pulseGuide {
+    0%,
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.1);
+        opacity: 0.8;
+    }
+}
+
+@keyframes pulseGuideOuter {
+    0%,
+    100% {
+        transform: scale(1);
+        opacity: 0.3;
+    }
+    50% {
+        transform: scale(1.05);
+        opacity: 0.15;
+    }
+}
+
+@keyframes countdownPulse {
+    0%,
+    100% {
+        transform: translate(-50%, -50%) scale(1);
+    }
+    50% {
+        transform: translate(-50%, -50%) scale(1.15);
+    }
+}
+
+@keyframes slideDown {
+    from {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
+
+.dg.ac {
+    display: none !important;
+}
+
+@media (max-width: 768px) {
+    #video,
+    #output {
+        width: 100% !important;
     }
 }

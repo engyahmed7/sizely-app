@@ -3,7 +3,11 @@
 
 @section('content')
 <link rel="stylesheet" href="{{ asset('css/trial-index.css') }}">
-
+@if(session('success'))
+<div class="alert alert-success">
+    {{ session('success') }}
+</div>
+@endif
 <div class="dashboard">
     <div class="content-wrapper">
         <div class="header">
@@ -23,10 +27,8 @@
                         <tr>
                             <th>{{ __('messages.trial_name') }}</th>
                             <th>{{ __('messages.shoulder_width_cm') }}</th>
-                            <th>{{ __('messages.right_eye') }}</th>
-                            <th>{{ __('messages.left_eye') }}</th>
-                            <th>{{ __('messages.right_shoulder') }}</th>
-                            <th>{{ __('messages.left_shoulder') }}</th>
+                            <th>{{ __('messages.chest_width_cm') }}</th>
+                            <th>{{ __('messages.actions') }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -38,25 +40,16 @@
                                 </a>
                             </td>
                             <td>{{ round($trial->shoulder_cm, 2) }}</td>
+                            <td>{{ round($trial->chest_cm, 2) }}</td>
                             <td>
-                                X: {{ $trial->righteye['x'] ?? '-' }}
-                                </BR>
-                                Y: {{ $trial->righteye['y'] ?? '-' }}
-                            </td>
-                            <td>
-                                X: {{ $trial->lefteye['x'] ?? '-' }}
-                                </BR>
-                                Y: {{ $trial->lefteye['y'] ?? '-' }}
-                            </td>
-                            <td>
-                                X: {{ $trial->rightshoulder['x'] ?? '-' }}
-                                </BR>
-                                Y: {{ $trial->rightshoulder['y'] ?? '-' }}
-                            </td>
-                            <td>
-                                X: {{ $trial->leftshoulder['x'] ?? '-' }}
-                                </BR>
-                                Y: {{ $trial->leftshoulder['y'] ?? '-' }}
+                                <div class="actions-container">
+                                    <a href="{{ route('trial.show', ['trial' => $trial->id]) }}" class="action-button view-button">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <button type="button" class="action-button delete-button" onclick="showDeleteModal({{$trial->id}})">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
                             </td>
                         </tr>
                         @endforeach
@@ -71,3 +64,27 @@
         </div>
     </div>
 </div>
+
+<div class="modal-backdrop" id="modalBackdrop"></div>
+<div class="modal" id="deleteModal">
+    <div class="modal-header">
+        <h3 class="modal-title">{{ __('messages.confirm_deletion') }}</h3>
+    </div>
+    <div class="modal-body">
+        {{ __('messages.delete_confirmation_message') }}
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="modal-button cancel-button" onclick="hideDeleteModal()">
+            {{ __('messages.cancel') }}
+        </button>
+        <form id="deleteForm" method="POST" style="margin: 0;">
+            @csrf
+            @method('DELETE')
+            <button type="submit" class="modal-button confirm-button">
+                {{ __('messages.confirm') }}
+            </button>
+        </form>
+    </div>
+</div>
+
+<script src="{{ asset('js/trial-index.js') }}"></script>

@@ -4,18 +4,20 @@ namespace App\Http\Controllers;
 
 use App\Models\Trial;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use App\Services\MeasurementService;
 
 class TrialController extends Controller
 {
-    private const REFERENCE_EYE_DISTANCE_MALE_CM = 6.4;
-    private const REFERENCE_EYE_DISTANCE_FEMALE_CM = 6.17;
-    private const CHEST_CIRCUMFERENCE_FACTOR = 2.5;
-    private const WAIST_CIRCUMFERENCE_FACTOR = 2.5;
-    private const NECK_CIRCUMFERENCE_FACTOR = 0.5;
-
     private const PER_PAGE = 12;
+    private $measurementService;
+
+    public function __construct(MeasurementService $measurementService)
+    {
+        $this->measurementService = $measurementService;
+    }
 
     public function index()
     {
@@ -35,49 +37,73 @@ class TrialController extends Controller
         try {
             $validatedData = $request->validate([
                 'trial_name' => 'required|string|max:255',
-                'gender' => 'required|in:male,female',
                 'data' => 'required|array',
+                'face_image' => 'required|string',
+                'chest_width_mm' => 'required|numeric',
+                'shoulder_width_mm' => 'required|numeric',
+
             ]);
+
+            // Log::info('Validated Data: ' . json_encode($validatedData));
 
             $data = $request->input('data');
 
-            // Extract points
-            $rightEye = $data['rightEye'];
-            $leftEye = $data['leftEye'];
-            $nose = $data['nose'];
-            $rightShoulder = $data['rightShoulder'];
-            $leftShoulder = $data['leftShoulder'];
-            $leftElbow = $data['leftElbow'];
-            $rightElbow = $data['rightElbow'];
-            $leftWrist = $data['leftWrist'];
-            $rightWrist = $data['rightWrist'];
-            $leftHip = $data['leftHip'];
-            $rightHip = $data['rightHip'];
-            $leftAnkle = $data['leftAnkle'];
+            $rightEye = $data['rightEye'] ?? null;
+            $leftEye = $data['leftEye'] ?? null;
+            $nose = $data['nose'] ?? null;
+            $rightShoulder = $data['rightShoulder'] ?? null;
+            $leftShoulder = $data['leftShoulder'] ?? null;
+            $leftElbow = $data['leftElbow'] ?? null;
+            $rightElbow = $data['rightElbow'] ?? null;
+            $leftWrist = $data['leftWrist'] ?? null;
+            $rightWrist = $data['rightWrist'] ?? null;
+            $leftHip = $data['leftHip'] ?? null;
+            $rightHip = $data['rightHip'] ?? null;
+            $leftAnkle = $data['leftAnkle'] ?? null;
+            $shoulderWidth = $validatedData['shoulder_width_mm'] / 10  ?? null;
+            $chestWidth = $validatedData['chest_width_mm'] / 10  ?? null;
 
-            // Calculate pixel distances
-            $eyePixelDistance = $this->calculatePixelDistance($leftEye, $rightEye);
-            $shoulderPixelDistance = $this->calculatePixelDistance($leftShoulder, $rightShoulder);
-
-            // Get pixel to cm ratio using eye distance as reference
-            $pixelToCmRatio = $this->getPixelToCmRatio($eyePixelDistance, $validatedData['gender']);
-
-            // Calculate all measurements in centimeters
-            $measurements = $this->calculateAllMeasurements(
-                $leftEye,
-                $rightEye,
-                $nose,
-                $leftShoulder,
-                $rightShoulder,
-                $leftElbow,
-                $rightElbow,
-                $leftWrist,
-                $rightWrist,
-                $leftHip,
-                $rightHip,
-                $leftAnkle,
-                $pixelToCmRatio
+            $shoulderWidthPixels = $this->measurementService->calculateShoulderWidth(
+                $data['leftShoulder'],
+                $data['rightShoulder']
             );
+
+            $chestLengthPixels = $this->measurementService->calculateChestLength(
+                $data['leftShoulder'],
+                $data['rightShoulder'],
+                $data['leftHip'],
+                $data['rightHip']
+            );
+
+            $leftSleevePixels = $this->measurementService->calculateSleeveLength(
+                $data['leftShoulder'],
+                $data['leftElbow'],
+                $data['leftWrist']
+            );
+
+            $rightSleevePixels = $this->measurementService->calculateSleeveLength(
+                $data['rightShoulder'],
+                $data['rightElbow'],
+                $data['rightWrist']
+            );
+
+            $shoulderWidthCm = $validatedData['shoulder_width_mm'] / 10;
+            $chestWidthCm = $validatedData['chest_width_mm'] / 10;
+
+            $pixelToCmRatio = $this->measurementService->calculatePixelToCentimeterRatio(
+                $chestWidthCm,
+                $chestLengthPixels
+            );
+
+            $measurements = [
+                'shoulder_cm' => $shoulderWidthCm,
+                'chest_cm' => $chestWidthCm,
+                'shoulder_cm' => $shoulderWidthPixels * $pixelToCmRatio,
+                'left_sleeve_cm' => $leftSleevePixels * $pixelToCmRatio,
+                'right_sleeve_cm' => $rightSleevePixels * $pixelToCmRatio
+            ];
+
+            Log::info('Measurements: ' . json_encode($measurements));
 
             $trial = Trial::create([
                 'trial_name' => $validatedData['trial_name'],
@@ -91,15 +117,21 @@ class TrialController extends Controller
                 'leftWrist' => $leftWrist,
                 'rightHip' => $rightHip,
                 'leftHip' => $leftHip,
-                'gender' => $validatedData['gender'],
                 'image_data' => $data['image'] ?? null,
-                'measurements' => $measurements
+                'face_image' => $validatedData['face_image'] ?? null,
+                'shoulder_cm' => $shoulderWidth,
+                'chest_cm' => $chestWidth,
+                "measurements" => json_encode($measurements),
             ]);
+
+            $sizes = $this->getSizeByDimensions($shoulderWidth) ?? [];
+
+            Log::info('Sizes: ' . json_encode($sizes));
 
             return response()->json([
                 'success' => true,
                 'trial' => $trial,
-                'measurements' => $measurements
+                'sizes' =>  json_encode($sizes)
             ], 201);
         } catch (\Exception $e) {
             Log::error('Trial creation error: ' . $e->getMessage());
@@ -107,75 +139,35 @@ class TrialController extends Controller
         }
     }
 
-    private function calculatePixelDistance($point1, $point2)
-    {
-        $deltaX = $point2['x'] - $point1['x'];
-        $deltaY = $point2['y'] - $point1['y'];
-        return sqrt($deltaX * $deltaX + $deltaY * $deltaY);
-    }
-
-    private function getPixelToCmRatio(float $eyeDistance, string $gender): float
-    {
-        $referenceEyeDistanceCM = $gender === 'male'
-            ? self::REFERENCE_EYE_DISTANCE_MALE_CM
-            : self::REFERENCE_EYE_DISTANCE_FEMALE_CM;
-        return $referenceEyeDistanceCM / $eyeDistance;
-    }
-
-    private function calculateAllMeasurements(
-        $leftEye,
-        $rightEye,
-        $nose,
-        $leftShoulder,
-        $rightShoulder,
-        $leftElbow,
-        $rightElbow,
-        $leftWrist,
-        $rightWrist,
-        $leftHip,
-        $rightHip,
-        $leftAnkle,
-        $pixelToCmRatio
-    ) {
-        // Shoulder Width
-        $shoulderWidth = $this->calculatePixelDistance($leftShoulder, $rightShoulder) * $pixelToCmRatio;
-
-        $chestCircumference = $shoulderWidth * self::CHEST_CIRCUMFERENCE_FACTOR;
-
-        // Sleeve Length -> left arm
-        $shoulderToElbow = $this->calculatePixelDistance($leftShoulder, $leftElbow);
-        $elbowToWrist = $this->calculatePixelDistance($leftElbow, $leftWrist);
-        $sleeveLength = ($shoulderToElbow + $elbowToWrist) * $pixelToCmRatio;
-
-        // Waist 
-        $waistWidth = $this->calculatePixelDistance($leftHip, $rightHip) * $pixelToCmRatio;
-        $waistCircumference = $waistWidth * self::WAIST_CIRCUMFERENCE_FACTOR;
-
-        // Neck  
-        $neckCircumference = $shoulderWidth * self::NECK_CIRCUMFERENCE_FACTOR;
-
-        //shirt  
-        $noseToHip = $this->calculatePixelDistance($nose, $leftHip);
-        $shirtLength = $noseToHip * $pixelToCmRatio;
-
-        // body height 
-        $noseToAnkle = $this->calculatePixelDistance($nose, $leftAnkle);
-        $bodyHeight = $noseToAnkle * $pixelToCmRatio;
-
-
-        return [
-            'chest_circumference' => round($chestCircumference, 2),
-            'shoulder_width' => round($shoulderWidth, 2),
-            'sleeve_length' => round($sleeveLength, 2),
-            'shirt_length' => round($shirtLength, 2),
-            'waist_circumference' => round($waistCircumference, 2),
-            'neck_circumference' => round($neckCircumference, 2),
-            'body_height' => round($bodyHeight, 2),
-        ];
-    }
-
     public function show(Trial $trial)
     {
-        return view('trial.show', compact('trial'));
+        $shoulderWidth = $trial->shoulder_cm;
+        $chestWidth = $trial->chest_cm;
+        Log::info('measurements: ' . json_encode($trial->measurements));
+        $sizes = $this->getSizeByDimensions($shoulderWidth);
+        return view('trial.show', [
+            'trial' => $trial,
+            'shoulderWidth' => $shoulderWidth,
+            'sizes' => json_encode($sizes),
+            'measurements' => $trial->measurements,
+            'chestWidth' => $chestWidth,
+        ]);
+    }
+    function getSizeByDimensions($shoulderWidth)
+    {
+
+        $results = DB::table('sizes')
+            ->select('size', 'material', 'style')
+            ->where('shoulder_width_min', '<=', (float)$shoulderWidth)
+            ->where('shoulder_width_max', '>=', (float)$shoulderWidth)
+            ->get();
+
+        return $results->toArray();
+    }
+
+    function destroy(Trial $trial)
+    {
+        $trial->delete();
+        return redirect()->route('trials.index')->with('success', 'Trial deleted successfully.');
     }
 }

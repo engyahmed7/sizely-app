@@ -8,10 +8,10 @@ Sizely App is a web-based application designed for real-time body pose detection
 
 Before setting up the Sizely App, ensure the following software is installed:
 
-- **PHP** >= 7.3
-- **Composer** (Dependency Management)
-- **Node.js**
-- **npm** (Node Package Manager)
+-   **PHP** >= 7.3
+-   **Composer** (Dependency Management)
+-   **Node.js**
+-   **npm** (Node Package Manager)
 
 ## Installation Guide
 
@@ -22,8 +22,8 @@ Follow these steps to install and set up Sizely App on your local machine:
 Start by cloning the repository from GitHub to your local machine:
 
 ```bash
-git clone https://github.com/engyahmed7/sizely-app.git
-cd sizely-app
+git clone https://gitlab.objects.ws/laravel/sizely-ai-detects-sizes-pos.git
+cd sizely-ai-detects-sizes-pos
 ```
 
 ### 2. Install Dependencies
@@ -32,10 +32,18 @@ Use Composer to install the PHP dependencies and npm to set up the JavaScript de
 
 ```bash
 composer install
-npm install
+npm install --legacy-peer-deps
 ```
 
-### 3. Configure Environment Variables
+### 3. Build the javascript
+
+Build the javascript files:
+
+```bash
+npm run build
+```
+
+### 4. Configure Environment Variables
 
 Copy the environment configuration file and adjust your settings:
 
@@ -49,7 +57,7 @@ Next, generate the application key for secure sessions and encryption:
 php artisan key:generate
 ```
 
-### 4. Run Database Migrations
+### 5. Run Database Migrations
 
 Set up your database by running the necessary migrations:
 
@@ -77,18 +85,18 @@ http://127.0.0.1:8000
 
 ## Project Structure
 
-- **PoseDetection.js**: This file initializes and uses the PoseNet model for real-time body pose detection through the webcam. It processes the pose data continuously as users move in front of the camera.
+-   **PoseDetection.js**: This file initializes and uses the PoseNet model for real-time body pose detection through the webcam. It processes the pose data continuously as users move in front of the camera.
 
-- **create.blade.php**: A Blade template that serves as the UI for initiating a new trial. It includes a form for entering trial details and sections to display video and canvas elements used for pose detection.
+-   **create.blade.php**: A Blade template that serves as the UI for initiating a new trial. It includes a form for entering trial details and sections to display video and canvas elements used for pose detection.
 
-- **trial.js**: This JavaScript file works alongside the **PoseDetection.js** module, handling the trial process and controlling the user interface for pose detection initiation and progression.
+-   **trial.js**: This JavaScript file works alongside the **PoseDetection.js** module, handling the trial process and controlling the user interface for pose detection initiation and progression.
 
 ## Acknowledgements
 
 This application integrates several key libraries and frameworks:
 
-- **[TensorFlow.js](https://www.tensorflow.org/js)** for machine learning and pose detection.
-- **[PoseNet](https://github.com/tensorflow/tfjs-models/tree/master/posenet)**, a lightweight and efficient model for pose detection.
-- **[body-measure](https://github.com/AI-Machine-Vision-Lab/body-measure)**, a repository that provides body measurement functionalities integrated into the app.
+-   **[TensorFlow.js](https://www.tensorflow.org/js)** for machine learning and pose detection.
+-   **[PoseNet](https://github.com/tensorflow/tfjs-models/tree/master/posenet)**, a lightweight and efficient model for pose detection.
+-   **[body-measure](https://github.com/AI-Machine-Vision-Lab/body-measure)**, a repository that provides body measurement functionalities integrated into the app.
 
 These tools and frameworks enabled the development of Sizely App and contributed significantly to its capabilities in real-time pose detection and analysis.
