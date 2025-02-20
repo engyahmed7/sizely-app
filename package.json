@@ -6,6 +6,7 @@
         "test": "tests"
       },
     "scripts": {
+        "postinstall": "npm install --legacy-peer-deps",
         "build": "webpack",
         "production": "webpack --mode production",
         "dev": "vite"
