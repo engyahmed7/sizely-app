@@ -121,4 +121,4 @@ We welcome contributions from the community! To contribute, follow these steps:
 7. **Open a Pull Request** with a clear description of your changes and link any relevant issues.
 8. **Wait for a review** and address any feedback provided.
 
-Your contributions help improve Vacation Tracker, and we appreciate your efforts!
+Your contributions help improve Sizely App, and we appreciate your efforts!
