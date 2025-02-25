@@ -1,102 +1,126 @@
-# Sizely AI Detects Sizes POS
+# Sizely AI Detects Sizes POS 
+
+![Laravel](https://img.shields.io/badge/Laravel-FF2D20?style=for-the-badge&logo=laravel&logoColor=white)
+![TensorFlow](https://img.shields.io/badge/TensorFlow-FF6F00?style=for-the-badge&logo=tensorflow&logoColor=white)
+![PoseNet](https://img.shields.io/badge/PoseNet-000000?style=for-the-badge&logo=tensorflow&logoColor=white)
+![PHP](https://img.shields.io/badge/PHP-777BB4?style=for-the-badge&logo=php&logoColor=white)
+![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)
 
 ## Overview
 
-Sizely App is a web-based application designed for real-time body pose detection via webcam. Utilizing the powerful **TensorFlow.js** and **PoseNet** models, it provides accurate body pose analysis. The application is built on **Laravel** for the backend, ensuring a robust and efficient user experience for pose recognition and analysis.
+**Sizely AI Detects Sizes POS** is a web application that combines face detection and pose estimation to calculate body measurements. The two-step AI workflow ensures accurate sizing by first aligning the user via face detection, then analyzing body posture with PoseNet. Includes a **retake button** for users to restart the camera if capture quality is unsatisfactory.
+
+---
+
+## Architecture Overview
+
+```mermaid
+graph TD
+  A[Webcam Input] --> B(Face Detection)
+  B --> C{Alignment Valid?}
+  C -->|Yes| D(Pose Detection)
+  C -->|No| B
+  D --> E[Body Measurements]
+  E --> F{User Satisfied?}
+  F -->|No| A
+  F -->|Yes| G(Laravel Backend)
+```
+
+---
+
+## Key Features
+
+### Two-Step Detection Workflow
+
+```mermaid
+sequenceDiagram
+  participant User
+  participant System
+  User->>System: Start Webcam
+  System->>System: Face Detection (Step 1)
+  System-->>User: "Align Your Face"
+  User->>System: Proper Positioning
+  System->>System: Pose Detection (Step 2)
+  System->>System: Calculate Measurements
+  System-->>User: Display Results
+  alt Retake Needed
+    User->>System: Click Retake Button
+    System->>User: Restart Camera
+    System->>System: Reset Detection
+  end
+```
+
+1. **Face Detection**  
+   Ensures user is centered and at optimal distance from the camera.
+2. **Pose Detection**  
+   Uses PoseNet to detect 17 body keypoints for measurement extraction.
+3. **Retake Functionality**  
+   Users can restart the camera and recapture data at any stage using the retake button.
+
+---
 
 ## Prerequisites
 
-Before setting up the Sizely App, ensure the following software is installed:
+![PHP Version](https://img.shields.io/badge/PHP-%3E%3D7.3-777BB4?style=flat)
+![Node.js](https://img.shields.io/badge/Node.js-%3E%3D14.x-339933?style=flat)
 
--   **PHP** >= 7.3
--   **Composer** (Dependency Management)
--   **Node.js**
--   **npm** (Node Package Manager)
+- Web browser with **WebGL support** (Chrome/Firefox recommended)
+- Modern GPU (for accelerated TensorFlow.js computations)
 
-## Installation Guide
+---
 
-Follow these steps to install and set up Sizely App on your local machine:
+## Installation & Setup
 
-### 1. Clone the Repository
-
-Start by cloning the repository from GitHub to your local machine:
-
+### 1. Clone Repository
 ```bash
-git clone https://gitlab.objects.ws/laravel/sizely-ai-detects-sizes-pos.git
-cd sizely-ai-detects-sizes-pos
+git clone https://github.com/engyahmed7/sizely-app.git
 ```
 
 ### 2. Install Dependencies
-
-Use Composer to install the PHP dependencies and npm to set up the JavaScript dependencies:
-
 ```bash
-composer install
-npm install --legacy-peer-deps
+composer install && npm install --legacy-peer-deps
 ```
 
-### 3. Build the javascript
-
-Build the javascript files:
-
+### 3. Configure Environment
 ```bash
-npm run build
+cp .env.example .env && php artisan key:generate
 ```
 
-### 4. Configure Environment Variables
+---
 
-Copy the environment configuration file and adjust your settings:
+## System Design
 
-```bash
-cp .env.example .env
+```mermaid
+graph LR
+  A[Client-Side] -->|Video Stream| B(TensorFlow.js)
+  B --> C[PoseNet Model]
+  C --> D{Keypoints}
+  D -->|JSON Data| E[Laravel API]
+  E --> F[Body-Measure Library]
+  F --> G[Size Metrics]
+  G --> H{Retake?}
+  H -->|Yes| A
 ```
 
-Next, generate the application key for secure sessions and encryption:
-
-```bash
-php artisan key:generate
-```
-
-### 5. Run Database Migrations
-
-Set up your database by running the necessary migrations:
-
-```bash
-php artisan migrate
-```
-
-## Running the Application
-
-### 1. Start the Laravel Development Server
-
-Launch the Laravel development server with the following command:
-
-```bash
-php artisan serve
-```
-
-### 2. Access the Application
-
-Once the server is running, open your web browser and go to:
-
-```
-http://127.0.0.1:8000
-```
-
-## Project Structure
-
--   **PoseDetection.js**: This file initializes and uses the PoseNet model for real-time body pose detection through the webcam. It processes the pose data continuously as users move in front of the camera.
-
--   **create.blade.php**: A Blade template that serves as the UI for initiating a new trial. It includes a form for entering trial details and sections to display video and canvas elements used for pose detection.
-
--   **trial.js**: This JavaScript file works alongside the **PoseDetection.js** module, handling the trial process and controlling the user interface for pose detection initiation and progression.
+---
 
 ## Acknowledgements
 
-This application integrates several key libraries and frameworks:
+- **Machine Learning**: [TensorFlow.js](https://www.tensorflow.org/js) | [PoseNet](https://github.com/tensorflow/tfjs-models/tree/master/posenet)
+- **Measurement Logic**: [body-measure](https://github.com/AI-Machine-Vision-Lab/body-measure)
+- **Backend Framework**: [Laravel](https://laravel.com)
 
--   **[TensorFlow.js](https://www.tensorflow.org/js)** for machine learning and pose detection.
--   **[PoseNet](https://github.com/tensorflow/tfjs-models/tree/master/posenet)**, a lightweight and efficient model for pose detection.
--   **[body-measure](https://github.com/AI-Machine-Vision-Lab/body-measure)**, a repository that provides body measurement functionalities integrated into the app.
+---
+## Contributing
+We welcome contributions from the community! To contribute, follow these steps:
 
-These tools and frameworks enabled the development of Sizely App and contributed significantly to its capabilities in real-time pose detection and analysis.
+1. **Fork** the repository.
+2. **Create a new branch** following this naming convention: `feature/your-feature-name`.
+3. **Make your changes** and ensure your code follows the project’s coding standards.
+4. **Write tests** if applicable to ensure new functionality works as expected.
+5. **Commit your changes** with a meaningful commit message.
+6. **Push to your branch** on your forked repository.
+7. **Open a Pull Request** with a clear description of your changes and link any relevant issues.
+8. **Wait for a review** and address any feedback provided.
+
+Your contributions help improve Vacation Tracker, and we appreciate your efforts!
