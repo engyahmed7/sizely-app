@@ -1,10 +1,8 @@
 # Sizely AI Detects Sizes POS 
 
-[![Laravel Version](https://img.shields.io/badge/Laravel-10.x-%23FF2D20?logo=laravel)](https://laravel.com)  
-[![TensorFlow Version](https://img.shields.io/badge/TensorFlow-2.x-FF6F00?style=for-the-badge&logo=tensorflow&logoColor=white)](https://www.tensorflow.org/)  
-[![PoseNet](https://img.shields.io/badge/PoseNet-000000?style=for-the-badge&logo=tensorflow&logoColor=white)](https://github.com/tensorflow/tfjs-models/tree/master/posenet)  
-[![PHP Version](https://img.shields.io/badge/PHP-8.1%2B-%23777BB4?logo=php)](https://www.php.net/)  
-[![Node.js](https://img.shields.io/badge/Node.js-18.x-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)](https://nodejs.org/)  
+[![Laravel Version](https://img.shields.io/badge/Laravel-10.x-%23FF2D20?logo=laravel)](https://laravel.com) [![PHP Version](https://img.shields.io/badge/PHP-8.1%2B-%23777BB4?logo=php)](https://www.php.net/)  
+
+[![Node.js](https://img.shields.io/badge/Node.js-18.x-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)](https://nodejs.org/) [![TensorFlow Version](https://img.shields.io/badge/TensorFlow-2.x-FF6F00?style=for-the-badge&logo=tensorflow&logoColor=white)](https://www.tensorflow.org/) [![PoseNet](https://img.shields.io/badge/PoseNet-000000?style=for-the-badge&logo=tensorflow&logoColor=white)](https://github.com/tensorflow/tfjs-models/tree/master/posenet)  
 
 ## Overview
 
