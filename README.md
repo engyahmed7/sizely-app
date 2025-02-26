@@ -1,4 +1,4 @@
-# Sizely AI Detects Sizes POS 
+# Sizely AI Detects Sizes  
 
 [![Laravel Version](https://img.shields.io/badge/Laravel-10.x-%23FF2D20?logo=laravel)](https://laravel.com) [![PHP Version](https://img.shields.io/badge/PHP-8.1%2B-%23777BB4?logo=php)](https://www.php.net/)  
 
@@ -7,6 +7,14 @@
 ## Overview
 
 **Sizely AI Detects Sizes POS** is a web application that combines face detection and pose estimation to calculate body measurements. The two-step AI workflow ensures accurate sizing by first aligning the user via face detection, then analyzing body posture with PoseNet. Includes a **retake button** for users to restart the camera if capture quality is unsatisfactory.
+
+---
+
+## Live Demo
+
+The Sizely AI Detects Sizes system is currently deployed and available for testing. Explore the full functionality
+
+🌐 **Demo URL**: [https://sizely-pose-detection.wuaze.com/](https://sizely-pose-detection.wuaze.com/)
 
 ---
 
